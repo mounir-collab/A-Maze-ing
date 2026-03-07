@@ -14,7 +14,8 @@ PATTERNS = {
     "ENTRY": r"^\d+,\d+$",
     "EXIT": r"^\d+,\d+$",
     "OUTPUT_FILE": r"^[\w\-.]+$",
-    "PERFECT": r"^(True|False)$"
+    "PERFECT": r"^(True|False)$",
+    "SEED": r"^\d+$"
 }
 
 
@@ -44,21 +45,26 @@ def parse_config(filename):
             key = key.strip()
             value = value.strip()
 
+            # check unknown keys
             if key not in PATTERNS:
                 raise ValueError(f"Unknown key '{key}' at line {line_num}")
 
+            # prevent duplicate keys
+            if key in config:
+                raise ValueError(f"Duplicate key '{key}' at line {line_num}")
+
+            # validate value
             if not re.fullmatch(PATTERNS[key], value):
                 raise ValueError(f"Invalid value '{value}' for {key}")
 
             config[key] = value
 
-    # check mandatory keys
+    # check required keys
     missing = REQUIRED_KEYS - config.keys()
-
     if missing:
         raise ValueError(f"Missing keys: {missing}")
 
-    # default OUTPUT_FILE if not provided
+    # default output file
     if "OUTPUT_FILE" not in config:
         config["OUTPUT_FILE"] = "maze.txt"
 
@@ -71,7 +77,10 @@ def parse_config(filename):
 
     config["PERFECT"] = config["PERFECT"] == "True"
 
-    # logic validation
+    if "SEED" in config:
+        config["SEED"] = int(config["SEED"])
+
+    # logical validation
     width = config["WIDTH"]
     height = config["HEIGHT"]
 
@@ -90,6 +99,3 @@ def parse_config(filename):
     return config
 
 
-config = parse_config("config.txt")
-
-print(config)
