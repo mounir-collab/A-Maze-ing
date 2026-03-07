@@ -137,12 +137,15 @@ class Maze:
             (center_y + 2, center_x + 2),
             (center_y, center_x + 4),
             (center_y, center_x + 5),
-            (center_y + 1, center_x + 5),
+            (center_y , center_x + 6),
+            (center_y + 1, center_x + 6),
+            (center_y + 2, center_x + 6),
             (center_y + 2, center_x + 5),
             (center_y + 2, center_x + 4),
             (center_y + 3, center_x + 4),
             (center_y + 4, center_x + 4),
             (center_y + 4, center_x + 5),
+            (center_y + 4, center_x + 6),
         ]
         for y, x in config["pattern"]:
             self.grid[y][x].visited = True
@@ -188,13 +191,6 @@ class Maze:
             print(line_bottom)
 
 
-# --- run example ---
-
-# maze = Maze(20, 10)
-
-# maze.generate()
-
-# maze.display()
 
 # ████ 
 # ████ 
