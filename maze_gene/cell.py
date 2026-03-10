@@ -48,9 +48,12 @@ class Cell:
 
 class Maze:
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, seed=None):
         self.width = width
         self.height = height
+
+        if seed is not None:
+            random.seed(seed)
 
         self.grid = [
             [Cell(x, y) for x in range(width)]
@@ -156,12 +159,12 @@ class Maze:
         exit_x, exit_y = self.exit
         os.system("clear")
         # top border
-        print("█" * (self.width * 2 + 1))
+        print("██" * (self.width * 2 + 1))
         
         for y in range(self.height):
 
-            line_top = "█"
-            line_bottom = "█"
+            line_top = "██"
+            line_bottom = "██"
 
             for x in range(self.width):
 
@@ -169,23 +172,23 @@ class Maze:
 
                 # mark Start / Exit
                 if (x, y) == (entry_x, entry_y):
-                    line_top += "S"
+                    line_top += "👽"
                 elif (x, y) == (exit_x, exit_y):
-                    line_top += "E"
+                    line_top += "🛸"
                 else:
-                    line_top += " "
+                    line_top += "  "
 
                 # east wall
                 if cell.has_wall(Cell.EAST):
-                    line_top += "█"
+                    line_top += "██"
                 else:
-                    line_top += " "
+                    line_top += "  "
 
                 # south wall
                 if cell.has_wall(Cell.SOUTH):
-                    line_bottom += "██"
+                    line_bottom += "████"
                 else:
-                    line_bottom += " █"
+                    line_bottom += "  ██"
 
             print(line_top)
             print(line_bottom)
