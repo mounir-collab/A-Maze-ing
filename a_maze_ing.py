@@ -45,9 +45,9 @@ def main():
     maze.entry = entry
     maze.exit = exit_
 
-    maze.generate()
+    
     maze.create_42_cell_indexs(config)
-
+    maze.generate()
     current_color = random.choice(COLORS)
 
     show_maze_and_list(maze, current_color, config)
@@ -67,8 +67,9 @@ def main():
             maze.entry = entry
             maze.exit = exit_
 
-            maze.generate() 
             maze.create_42_cell_indexs(config)
+            maze.generate() 
+            
 
             print("New random maze generated!")
             show_maze_and_list(maze, current_color, config)

@@ -244,7 +244,7 @@ class Maze:
                 elif (x, y) == (exit_x, exit_y):
                     line_top += "🛸"
                 elif (x, y) in path_coords:
-                    line_top += "· "
+                    line_top += "🧶"
                 else:
                     line_top += "  "
 
