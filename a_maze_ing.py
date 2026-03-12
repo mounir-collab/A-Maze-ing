@@ -10,8 +10,13 @@ RESET_COLOR = "\033[0m"
 
 def show_maze_and_list(maze, color, config):
     print(color, end="")
-    maze.create_42_cell_indexs(config)
+
+    # maze.create_42_cell_indexs(config)
+
+    # path = maze.solve()   # compute the path
+
     maze.display()
+
     print(RESET_COLOR, end="")
 
 
@@ -40,8 +45,8 @@ def main():
     maze.entry = entry
     maze.exit = exit_
 
-    maze.create_42_cell_indexs(config)
     maze.generate()
+    maze.create_42_cell_indexs(config)
 
     current_color = random.choice(COLORS)
 
@@ -51,7 +56,8 @@ def main():
         print("\n=== Maze Menu ===")
         print("1: Generate new random maze")
         print("2: Display maze in random color")
-        print("3: Exit")
+        print("3: Solve maze")
+        print("4: Exit")
 
         choice = input("Choose an option: ")
 
@@ -61,8 +67,8 @@ def main():
             maze.entry = entry
             maze.exit = exit_
 
+            maze.generate() 
             maze.create_42_cell_indexs(config)
-            maze.generate()
 
             print("New random maze generated!")
             show_maze_and_list(maze, current_color, config)
@@ -73,8 +79,18 @@ def main():
 
             print("Displaying maze in a new random color!")
             show_maze_and_list(maze, current_color, config)
-
+        
         elif choice == "3":
+
+            path = maze.solve()
+
+            print("Maze solved!")
+
+            print(current_color, end="")
+            maze.display(path)
+            print(RESET_COLOR, end="")
+
+        elif choice == "4":
             print("Exiting...")
             break
 

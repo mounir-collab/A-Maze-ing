@@ -1,5 +1,6 @@
 import random 
 import os
+from collections import deque
 class Cell:
     # bit masks for each direction
     NORTH = 1 << 0  # 0001
@@ -42,7 +43,8 @@ class Cell:
     def __repr__(self):
         return f"Cell({self.x},{self.y},walls={bin(self.walls)})"
 
-
+# ce = Cell(1 , 2)
+# print(ce)
 
 
 
@@ -83,7 +85,8 @@ class Maze:
 
             if 0 <= nx < self.width and 0 <= ny < self.height:
                 result.append(self.grid[ny][nx])
-
+            print("neighbours : ")
+            print(result)
         return result
 
     def unvisited_neighbors(self, cell):
@@ -92,17 +95,42 @@ class Maze:
             n for n in self.neighbors(cell)
             if not n.visited
         ]
+    def reachable_neighbors(self, cell):
 
+        result = []
+
+        # north
+        if not cell.has_wall(Cell.NORTH) and cell.y > 0:
+            result.append(self.grid[cell.y - 1][cell.x])
+
+        # east
+        if not cell.has_wall(Cell.EAST) and cell.x < self.width - 1:
+            result.append(self.grid[cell.y][cell.x + 1])
+
+        # south
+        if not cell.has_wall(Cell.SOUTH) and cell.y < self.height - 1:
+            result.append(self.grid[cell.y + 1][cell.x])
+
+        # west
+        if not cell.has_wall(Cell.WEST) and cell.x > 0:
+            result.append(self.grid[cell.y][cell.x - 1])
+
+        return result
     def generate(self):
-
+        """
+        This function generates a random maze using the Recursive Backtracker algorithm
+        """
         stack = []
-
+        print("start :")
         start = self.grid[0][0]
+        print(start)
+        # print("grid :")
         # print(self.grid)
         start.visited = True
 
         stack.append(start)
-
+        # print("stack :")
+        # print(stack)
         while stack:
 
             current = stack[-1]
@@ -121,7 +149,7 @@ class Maze:
 
             else:
                 stack.pop()
-            # print(stack)
+        # print(stack)
 
     def create_42_cell_indexs(self, config):
         center_x = (config["WIDTH"] // 2) - 3
@@ -153,16 +181,56 @@ class Maze:
         for y, x in config["pattern"]:
             self.grid[y][x].visited = True
 
-    def display(self):
+    def solve(self):
+
+        start = self.grid[self.entry[1]][self.entry[0]]
+        end = self.grid[self.exit[1]][self.exit[0]]
+
+        queue = deque([start])
+        visited = {start}
+        parent = {}
+
+        while queue:
+
+            current = queue.popleft()
+
+            if current == end:
+                break
+
+            for neighbor in self.reachable_neighbors(current):
+
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    parent[neighbor] = current
+                    queue.append(neighbor)
+
+        # rebuild path
+        path = []
+        cell = end
+
+        while cell != start:
+            path.append(cell)
+            cell = parent[cell]
+
+        path.append(start)
+        path.reverse()
+
+        return path
+    def display(self , path = None):
 
         entry_x, entry_y = self.entry
         exit_x, exit_y = self.exit
         os.system("clear")
+
+        # convert path to coordinate set
+        path_coords = set()
+        if path:
+            path_coords = {(cell.x, cell.y) for cell in path}
+
         # top border
         print("██" * (self.width * 2 + 1))
         
         for y in range(self.height):
-
             line_top = "██"
             line_bottom = "██"
 
@@ -175,6 +243,8 @@ class Maze:
                     line_top += "👽"
                 elif (x, y) == (exit_x, exit_y):
                     line_top += "🛸"
+                elif (x, y) in path_coords:
+                    line_top += "· "
                 else:
                     line_top += "  "
 
@@ -197,3 +267,8 @@ class Maze:
 
 # ████ 
 # ████ 
+
+
+# my_maze = Maze(10 , 10)
+# my_maze.generate()
+# my_maze.display()
