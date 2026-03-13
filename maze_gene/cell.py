@@ -85,8 +85,8 @@ class Maze:
 
             if 0 <= nx < self.width and 0 <= ny < self.height:
                 result.append(self.grid[ny][nx])
-            print("neighbours : ")
-            print(result)
+            # print("neighbours : ")
+            # print(result)
         return result
 
     def unvisited_neighbors(self, cell):
@@ -121,11 +121,11 @@ class Maze:
         This function generates a random maze using the Recursive Backtracker algorithm
         """
         stack = []
-        print("start :")
+        # print("start :")
         start = self.grid[0][0]
-        print(start)
-        # print("grid :")
-        # print(self.grid)
+        # print(start)
+        print("grid :")
+        print(self.grid)
         start.visited = True
 
         stack.append(start)
@@ -149,6 +149,9 @@ class Maze:
 
             else:
                 stack.pop()
+        
+        print("grid :")
+        print(self.grid)
         # print(stack)
 
     def create_42_cell_indexs(self, config):
@@ -178,6 +181,7 @@ class Maze:
             (center_y + 4, center_x + 5),
             (center_y + 4, center_x + 6),
         ]
+
         for y, x in config["pattern"]:
             self.grid[y][x].visited = True
 
@@ -229,7 +233,6 @@ class Maze:
 
         # top border
         print("██" * (self.width * 2 + 1))
-        
         for y in range(self.height):
             line_top = "██"
             line_bottom = "██"
@@ -262,11 +265,52 @@ class Maze:
 
             print(line_top)
             print(line_bottom)
+    
+    def export_hex_maze_and_path(self, path, filename="maze.txt"):
 
+        with open(filename, "w") as f:
+
+        # ---- MAZE WALLS (hex) ----
+            for y in range(self.height):
+                line = ""
+                for x in range(self.width):
+                    cell = self.grid[y][x]
+                    value = 0
+                    if cell.has_wall(Cell.NORTH):
+                        value |= 1
+                    if cell.has_wall(Cell.EAST):
+                        value |= 2
+                    if cell.has_wall(Cell.SOUTH):
+                        value |= 4
+                    if cell.has_wall(Cell.WEST):
+                        value |= 8
+                    line += format(value, "X")
+                f.write(line + "\n")
+
+            # ---- PATH (as letters) ----
+            directions = ""
+            for i in range(len(path)-1):
+                c = path[i]
+                n = path[i+1]
+                dx = n.x - c.x
+                dy = n.y - c.y
+
+                if dx == 1:
+                    directions += "E"
+                elif dx == -1:
+                    directions += "O"
+                elif dy == 1:
+                    directions += "S"
+                elif dy == -1:
+                    directions += "N"
+
+            f.write("\npath " + directions + "\n")
 
 
 # ████ 
 # ████ 
+
+# ██👽  
 
 
 # my_maze = Maze(10 , 10)

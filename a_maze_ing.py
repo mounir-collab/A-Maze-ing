@@ -41,13 +41,14 @@ def main():
         random.seed(config["SEED"])
 
     # Initial maze
-    maze = Maze(width, height)
+    maze = Maze(width, height , config["SEED"])
     maze.entry = entry
     maze.exit = exit_
 
     
     maze.create_42_cell_indexs(config)
     maze.generate()
+    
     current_color = random.choice(COLORS)
 
     show_maze_and_list(maze, current_color, config)
@@ -68,7 +69,7 @@ def main():
             maze.exit = exit_
 
             maze.create_42_cell_indexs(config)
-            maze.generate() 
+            maze.generate()
             
 
             print("New random maze generated!")
@@ -84,6 +85,7 @@ def main():
         elif choice == "3":
 
             path = maze.solve()
+            maze.export_hex_maze_and_path(path, "maze.txt")
 
             print("Maze solved!")
 
