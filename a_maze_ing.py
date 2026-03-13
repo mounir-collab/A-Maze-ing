@@ -88,7 +88,7 @@ def main():
 
             path = maze.solve()
             maze.export_hex_maze_and_path(path, "maze.txt")
-
+            
             print("Maze solved!")
 
             print(current_color, end="")

@@ -61,7 +61,7 @@ class Maze:
             [Cell(x, y) for x in range(width)]
             for y in range(height)
         ]
-        
+        print(self.grid)
 
 
     def get_cell(self, x, y):
@@ -124,8 +124,8 @@ class Maze:
         # print("start :")
         start = self.grid[0][0]
         # print(start)
-        print("grid :")
-        print(self.grid)
+        # print("grid :")
+        # print(self.grid)
         start.visited = True
 
         stack.append(start)
@@ -245,9 +245,9 @@ class Maze:
                 if (x, y) == (entry_x, entry_y):
                     line_top += "👽"
                 elif (x, y) == (exit_x, exit_y):
-                    line_top += "🛸"
+                    line_top += "🌍"
                 elif (x, y) in path_coords:
-                    line_top += "🧶"
+                    line_top += "🛸"
                 elif (cell.walls == 15):
                     line_top += "⬜"
                 else:

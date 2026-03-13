@@ -1,4 +1,5 @@
 import re
+import os
 
 REQUIRED_KEYS = {
     "WIDTH",
@@ -67,7 +68,9 @@ def parse_config(filename):
     # default output file
     if "OUTPUT_FILE" not in config:
         config["OUTPUT_FILE"] = "maze.txt"
+    
 
+    
     # convert types
     config["WIDTH"] = int(config["WIDTH"])
     config["HEIGHT"] = int(config["HEIGHT"])
@@ -99,3 +102,4 @@ def parse_config(filename):
     return config
 
 
+# print(parse_config("config.txt"))
