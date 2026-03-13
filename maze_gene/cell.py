@@ -14,7 +14,7 @@ class Cell:
         self.walls = self.NORTH | self.EAST | self.SOUTH | self.WEST # | is the bitwise OR operator.
         self.visited = False
 
-    def has_wall(self, direction):
+    def has_wall(self, direction) -> bool:
         return (self.walls & direction) != 0
 
     def remove_wall(self, direction):
@@ -220,7 +220,7 @@ class Maze:
         path.reverse()
 
         return path
-    def display(self , path = None):
+    def display(self, path = None):
 
         entry_x, entry_y = self.entry
         exit_x, exit_y = self.exit
@@ -248,6 +248,8 @@ class Maze:
                     line_top += "🛸"
                 elif (x, y) in path_coords:
                     line_top += "🧶"
+                elif (cell.walls == 15):
+                    line_top += "⬜"
                 else:
                     line_top += "  "
 
@@ -263,6 +265,7 @@ class Maze:
                 else:
                     line_bottom += "  ██"
 
+                
             print(line_top)
             print(line_bottom)
     
@@ -304,7 +307,7 @@ class Maze:
                 elif dy == -1:
                     directions += "N"
 
-            f.write("\npath " + directions + "\n")
+            f.write("\npath: " + directions + "\n")
 
 
 # ████ 

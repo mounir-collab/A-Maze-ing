@@ -39,9 +39,11 @@ def main():
     # Seed if exists
     if "SEED" in config:
         random.seed(config["SEED"])
+    
+    my_seed = config.get("SEED")
 
     # Initial maze
-    maze = Maze(width, height , config["SEED"])
+    maze = Maze(width, height , my_seed)
     maze.entry = entry
     maze.exit = exit_
 
@@ -49,10 +51,10 @@ def main():
     maze.create_42_cell_indexs(config)
     maze.generate()
     
-    current_color = random.choice(COLORS)
+    current_color = COLORS[0]
 
     show_maze_and_list(maze, current_color, config)
-
+    i = 1
     while True:
         print("\n=== Maze Menu ===")
         print("1: Generate new random maze")
@@ -63,8 +65,7 @@ def main():
         choice = input("Choose an option: ")
 
         if choice == "1":
-
-            maze = Maze(width, height)
+            maze = Maze(width, height , my_seed)
             maze.entry = entry
             maze.exit = exit_
 
@@ -77,7 +78,8 @@ def main():
 
         elif choice == "2":
 
-            current_color = random.choice(COLORS)
+            current_color = COLORS[i % len(COLORS)]
+            i += 1
 
             print("Displaying maze in a new random color!")
             show_maze_and_list(maze, current_color, config)
