@@ -24,41 +24,44 @@ def parse_config(filename):
 
     config = {}
 
-    with open(filename) as f:
+    try:
+        with open(filename) as f:
 
-        for line_num, line in enumerate(f, 1):
+            for line_num, line in enumerate(f, 1):
 
-            line = line.strip()
+                line = line.strip()
 
-            # skip empty lines
-            if not line:
-                continue
+                # skip empty lines
+                if not line:
+                    continue
 
-            # skip comments
-            if line.startswith("#"):
-                continue
+                # skip comments
+                if line.startswith("#"):
+                    continue
 
-            if "=" not in line:
-                raise ValueError(f"Invalid line {line_num}: {line}")
+                if "=" not in line:
+                    raise ValueError(f"Invalid line {line_num}: {line}")
 
-            key, value = line.split("=", 1)
+                key, value = line.split("=", 1)
 
-            key = key.strip()
-            value = value.strip()
+                key = key.strip()
+                value = value.strip()
 
-            # check unknown keys
-            if key not in PATTERNS:
-                raise ValueError(f"Unknown key '{key}' at line {line_num}")
+                # check unknown keys
+                if key not in PATTERNS:
+                    raise ValueError(f"Unknown key '{key}' at line {line_num}")
 
-            # prevent duplicate keys
-            if key in config:
-                raise ValueError(f"Duplicate key '{key}' at line {line_num}")
+                # prevent duplicate keys
+                if key in config:
+                    raise ValueError(f"Duplicate key '{key}' at line {line_num}")
 
-            # validate value
-            if not re.fullmatch(PATTERNS[key], value):
-                raise ValueError(f"Invalid value '{value}' for {key}")
+                # validate value
+                if not re.fullmatch(PATTERNS[key], value):
+                    raise ValueError(f"Invalid value '{value}' for {key}")
 
-            config[key] = value
+                config[key] = value
+    except :
+        print('Er')
 
     # check required keys
     missing = REQUIRED_KEYS - config.keys()

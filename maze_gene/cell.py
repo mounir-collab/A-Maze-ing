@@ -150,8 +150,8 @@ class Maze:
             else:
                 stack.pop()
         
-        print("grid :")
-        print(self.grid)
+        # print("grid :")
+        # print(self.grid)
         # print(stack)
 
     def create_42_cell_indexs(self, config):
@@ -181,9 +181,9 @@ class Maze:
             (center_y + 4, center_x + 5),
             (center_y + 4, center_x + 6),
         ]
-
-        for y, x in config["pattern"]:
-            self.grid[y][x].visited = True
+        if config['WIDTH'] > 7 and config['HEIGHT'] > 5:
+            for y, x in config["pattern"]:
+                self.grid[y][x].visited = True
 
     def solve(self):
 

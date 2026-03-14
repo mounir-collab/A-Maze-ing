@@ -56,13 +56,18 @@ def main():
     show_maze_and_list(maze, current_color, config)
     i = 1
     while True:
-        print("\n=== Maze Menu ===")
-        print("1: Generate new random maze")
-        print("2: Display maze in random color")
-        print("3: Solve maze")
-        print("4: Exit")
+        try:
+            print("\n=== Maze Menu ===")
+            print("1: Generate new random maze")
+            print("2: Display maze in random color")
+            print("3: Solve maze")
+            print("4: Exit")
 
-        choice = input("Choose an option: ")
+            choice = input("Choose an option: ")
+
+        except (KeyboardInterrupt, Exception):
+            print("\nProgram interrupted. Exiting...")
+            break
 
         if choice == "1":
             maze = Maze(width, height , my_seed)
