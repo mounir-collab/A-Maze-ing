@@ -185,6 +185,8 @@ class Maze:
             for y, x in config["pattern"]:
                 self.grid[y][x].visited = True
 
+    from collections import deque
+
     def solve(self):
 
         start = self.grid[self.entry[1]][self.entry[0]]
@@ -195,33 +197,35 @@ class Maze:
         parent = {}
 
         while queue:
-
             current = queue.popleft()
 
             if current == end:
                 break
 
             for neighbor in self.reachable_neighbors(current):
-
                 if neighbor not in visited:
                     visited.add(neighbor)
                     parent[neighbor] = current
                     queue.append(neighbor)
 
-        # rebuild path
+        # reconstruct path
         path = []
-        cell = end
+        cur = end
 
-        while cell != start:
-            path.append(cell)
-            cell = parent[cell]
+        while cur != start:
+            path.append(cur)
+            cur = parent.get(cur)
+
+            if cur is None:   # no path
+                return []
 
         path.append(start)
         path.reverse()
 
         return path
-    def display(self, path = None):
 
+    def display(self, path = None):
+        
         entry_x, entry_y = self.entry
         exit_x, exit_y = self.exit
         os.system("clear")

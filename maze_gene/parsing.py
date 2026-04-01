@@ -1,5 +1,4 @@
 import re
-import os
 
 REQUIRED_KEYS = {
     "WIDTH",
@@ -21,75 +20,63 @@ PATTERNS = {
 
 
 def parse_config(filename):
-
     config = {}
 
-    try:
-        with open(filename) as f:
+    with open(filename) as f:
+        for line_num, line in enumerate(f, 1):
 
-            for line_num, line in enumerate(f, 1):
+            line = line.strip()
 
-                line = line.strip()
+            # skip empty or comment
+            if not line or line.startswith("#"):
+                continue
 
-                # skip empty lines
-                if not line:
-                    continue
+            # لازم يكون فيها =
+            if "=" not in line:
+                raise ValueError(f"[Line {line_num}] Missing '=' in line: {line}")
 
-                # skip comments
-                if line.startswith("#"):
-                    continue
+            key, value = line.split("=", 1)
+            key = key.strip()
+            value = value.strip()
 
-                if "=" not in line:
-                    raise ValueError(f"Invalid line {line_num}: {line}")
+            # key خاصها تكون معروفة
+            if key not in PATTERNS:
+                raise ValueError(f"[Line {line_num}] Unknown key: {key}")
 
-                key, value = line.split("=", 1)
+            # value خاصها تكون موجودة
+            if value == "":
+                raise ValueError(f"[Line {line_num}] Missing value for key: {key}")
 
-                key = key.strip()
-                value = value.strip()
+            # duplicate key
+            if key in config:
+                raise ValueError(f"[Line {line_num}] Duplicate key: {key}")
 
-                # check unknown keys
-                if key not in PATTERNS:
-                    raise ValueError(f"Unknown key '{key}' at line {line_num}")
+            # validate format
+            if not re.fullmatch(PATTERNS[key], value):
+                raise ValueError(f"[Line {line_num}] Invalid value '{value}' for key '{key}'")
 
-                # prevent duplicate keys
-                if key in config:
-                    raise ValueError(f"Duplicate key '{key}' at line {line_num}")
-
-                # validate value
-                if not re.fullmatch(PATTERNS[key], value):
-                    raise ValueError(f"Invalid value '{value}' for {key}")
-
-                config[key] = value
-    except :
-        print('Er')
+            config[key] = value
 
     # check required keys
     missing = REQUIRED_KEYS - config.keys()
     if missing:
-        raise ValueError(f"Missing keys: {missing}")
+        raise ValueError(f"Missing required keys: {missing}")
 
-    # default output file
-    if "OUTPUT_FILE" not in config:
-        config["OUTPUT_FILE"] = "maze.txt"
-    
+    # default
+    config.setdefault("OUTPUT_FILE", "maze.txt")
 
-    
     # convert types
     config["WIDTH"] = int(config["WIDTH"])
     config["HEIGHT"] = int(config["HEIGHT"])
-
     config["ENTRY"] = tuple(map(int, config["ENTRY"].split(",")))
     config["EXIT"] = tuple(map(int, config["EXIT"].split(",")))
-
     config["PERFECT"] = config["PERFECT"] == "True"
 
     if "SEED" in config:
         config["SEED"] = int(config["SEED"])
 
     # logical validation
-    width = config["WIDTH"]
-    height = config["HEIGHT"]
-
+    width, height = config["WIDTH"], config["HEIGHT"]
     ex, ey = config["ENTRY"]
     xx, xy = config["EXIT"]
 
@@ -103,6 +90,3 @@ def parse_config(filename):
         raise ValueError("ENTRY and EXIT cannot be the same")
 
     return config
-
-
-# print(parse_config("config.txt"))
