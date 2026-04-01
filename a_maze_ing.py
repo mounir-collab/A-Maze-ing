@@ -111,13 +111,13 @@ def main():
 
             print(color)
             print("╔" + "═"*40 + "╗")
-            print("║{:^40}║".format("👽 MAZE MENU"))
+            print("║{:^39}║".format("👽 MAZE MENU"))
             print("╠" + "═"*40 + "╣")
 
-            print("║  {}1{} → Generate new random maze       ║".format(highlight, color))
-            print("║  {}2{} → Display maze (random color)    ║".format(highlight, color))
-            print("║  {}3{} → Solve maze                     ║".format(highlight, color))
-            print("║  {}4{} → Exit                           ║".format(highlight, color))
+            print("║  {}1{} → Generate new random maze          ║".format(highlight, color))
+            print("║  {}2{} → Display maze (random color)       ║".format(highlight, color))
+            print("║  {}3{} → Solve maze                        ║".format(highlight, color))
+            print("║  {}4{} → Exit                              ║".format(highlight, color))
 
             print("╚" + "═"*40 + "╝")
             print(reset)
