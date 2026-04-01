@@ -50,7 +50,7 @@ def show_intro():
 
     print(dim + "=" * 45 + reset)
     print(dim + "  Maze Generator & Solver" + reset)
-    print(dim + "  by Anass" + reset)
+    print(dim + "  by ancheab and manzar" + reset)
     print(dim + "=" * 45 + reset)
 
     print()
