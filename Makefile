@@ -5,7 +5,7 @@ install:
 	pip install -r requirements.txt
 
 debug:
-	python3 -m pdb main.py
+	python3 -m pdb a_maze_ing.py
 
 clean:
 	rm -rf __pycache__ .mypy_cache

@@ -1,5 +1,6 @@
 import random 
 import os
+import time
 from collections import deque
 class Cell:
     # bit masks for each direction
@@ -224,54 +225,63 @@ class Maze:
 
         return path
 
-    def display(self, path = None):
-        
+
+
+    def display(self, path=None, animate=False, delay=0.1, color="\033[97m"):
         entry_x, entry_y = self.entry
         exit_x, exit_y = self.exit
-        os.system("clear")
 
-        # convert path to coordinate set
-        path_coords = set()
+        RESET = "\033[0m"
+
+        path_coords = []
         if path:
-            path_coords = {(cell.x, cell.y) for cell in path}
+            path_coords = [(cell.x, cell.y) for cell in path]
 
-        # top border
-        print("██" * (self.width * 2 + 1))
-        for y in range(self.height):
-            line_top = "██"
-            line_bottom = "██"
+        steps = path_coords if animate and path else []
+        animated_set = set()
 
-            for x in range(self.width):
+        for step_index in range(len(steps) if animate else 1):
+            os.system("clear")
 
-                cell = self.grid[y][x]
+            if animate:
+                animated_set.add(steps[step_index])
 
-                # mark Start / Exit
-                if (x, y) == (entry_x, entry_y):
-                    line_top += "👽"
-                elif (x, y) == (exit_x, exit_y):
-                    line_top += "🌍"
-                elif (x, y) in path_coords:
-                    line_top += "🛸"
-                elif (cell.walls == 15):
-                    line_top += "⬜"
-                else:
-                    line_top += "  "
+            print(color + "██" * (self.width * 2 + 1) + RESET)
 
-                # east wall
-                if cell.has_wall(Cell.EAST):
-                    line_top += "██"
-                else:
-                    line_top += "  "
+            for y in range(self.height):
+                line_top = color + "██"
+                line_bottom = color + "██"
 
-                # south wall
-                if cell.has_wall(Cell.SOUTH):
-                    line_bottom += "████"
-                else:
-                    line_bottom += "  ██"
+                for x in range(self.width):
+                    cell = self.grid[y][x]
+                    current_path = animated_set if animate else set(path_coords)
 
-                
-            print(line_top)
-            print(line_bottom)
+                    if (x, y) == (entry_x, entry_y):
+                        line_top += "👽"
+                    elif (x, y) == (exit_x, exit_y):
+                        line_top += "🌍"
+                    elif (x, y) in current_path:
+                        line_top += "🛸"
+                    elif cell.walls == 15:
+                        line_top += "⬜"
+                    else:
+                        line_top += "  "
+
+                    if cell.has_wall(Cell.EAST):
+                        line_top += color + "██"
+                    else:
+                        line_top += "  "
+
+                    if cell.has_wall(Cell.SOUTH):
+                        line_bottom += color + "████"
+                    else:
+                        line_bottom += "  ██"
+
+                print(line_top + RESET)
+                print(line_bottom + RESET)
+
+            if animate:
+                time.sleep(delay)
     
     def export_hex_maze_and_path(self, path, filename="maze.txt"):
 
@@ -280,7 +290,7 @@ class Maze:
         # ---- MAZE WALLS (hex) ----
             for y in range(self.height):
                 line = ""
-                for x in range(self.width):
+                for x in range(self.width): 
                     cell = self.grid[y][x]
                     value = 0
                     if cell.has_wall(Cell.NORTH):
@@ -323,3 +333,4 @@ class Maze:
 # my_maze = Maze(10 , 10)
 # my_maze.generate()
 # my_maze.display()
+

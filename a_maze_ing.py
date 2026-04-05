@@ -9,17 +9,10 @@ COLORS = ["\033[91m", "\033[92m", "\033[93m", "\033[94m", "\033[95m", "\033[96m"
 RESET_COLOR = "\033[0m"
 
 
-def show_maze_and_list(maze, color, config):
+def show_maze_and_list(maze, color, config, path=None):
     print(color, end="")
-
-    # maze.create_42_cell_indexs(config)
-
-    # path = maze.solve()   # compute the path
-
-    maze.display()
-
+    maze.display(path=path, color=color)   # 👈 دعم path
     print(RESET_COLOR, end="")
-
 
 
 def clear_screen():
@@ -42,15 +35,12 @@ def show_intro():
 ░██    ░██         ░██  ░██  ░██ ░██    ░██   ░██      ░██                   ░██  ░██  ░██░██ ░██     ██ 
 ░██    ░██         ░██       ░██ ░██    ░██  ░██       ░██                   ░██  ░██   ░████  ░██  ░███ 
 ░██    ░██         ░██       ░██ ░██    ░██ ░█████████ ░██████████         ░██████░██    ░███   ░█████░█ 
-                                                                                                         
-                                                                                                         
-                                                                                                         
 """)
     print(reset)
 
     print(dim + "=" * 45 + reset)
     print(dim + "  Maze Generator & Solver" + reset)
-    print(dim + "  by ancheab and manzar" + reset)
+    print(dim + "  by Anass" + reset)
     print(dim + "=" * 45 + reset)
 
     print()
@@ -65,11 +55,8 @@ def show_intro():
 
 def main():
     
-    show_intro()  # 👈 هادي جديدة
+    show_intro()
 
-    if len(sys.argv) != 2:
-        print("Usage: python3 main.py config.txt")
-        sys.exit(1)
     if len(sys.argv) != 2:
         print("Usage: python3 main.py config.txt")
         sys.exit(1)
@@ -84,29 +71,31 @@ def main():
     entry = config["ENTRY"]
     exit_ = config["EXIT"]
 
-    # Seed if exists
+    # Seed
     if "SEED" in config:
         random.seed(config["SEED"])
     
     my_seed = config.get("SEED")
 
     # Initial maze
-    maze = Maze(width, height , my_seed)
+    maze = Maze(width, height, my_seed)
     maze.entry = entry
     maze.exit = exit_
 
-    
     maze.create_42_cell_indexs(config)
     maze.generate()
-    
-    current_color = COLORS[0]
 
-    show_maze_and_list(maze, current_color, config)
+    current_color = COLORS[0]
+    path = None   # 🔥 مهم
+
+    show_maze_and_list(maze, current_color, config, path)
+
     i = 1
+
     while True:
         try:
-            color = "\033[94m"   # blue
-            highlight = "\033[92m"  # green
+            color = "\033[94m"
+            highlight = "\033[92m"
             reset = "\033[0m"
 
             print(color)
@@ -129,16 +118,17 @@ def main():
             break
 
         if choice == "1":
-            maze = Maze(width, height , my_seed)
+            maze = Maze(width, height, my_seed)
             maze.entry = entry
             maze.exit = exit_
 
             maze.create_42_cell_indexs(config)
             maze.generate()
-            
+
+            path = None   # 🔥 reset path
 
             print("New random maze generated!")
-            show_maze_and_list(maze, current_color, config)
+            show_maze_and_list(maze, current_color, config, path)
 
         elif choice == "2":
 
@@ -146,18 +136,22 @@ def main():
             i += 1
 
             print("Displaying maze in a new random color!")
-            show_maze_and_list(maze, current_color, config)
-        
+            show_maze_and_list(maze, current_color, config, path)
+
         elif choice == "3":
 
             path = maze.solve()
-            maze.export_hex_maze_and_path(path, "maze.txt")
-            
-            print("Maze solved!")
 
-            print(current_color, end="")
-            maze.display(path)
-            print(RESET_COLOR, end="")
+            show = input("Show path? (y/n/animate): ").lower().strip()
+
+            if show == "y":
+                maze.display(path, color=current_color)
+
+            elif show == "animate":
+                maze.display(path, animate=True, delay=0.2, color=current_color)
+
+            elif show == "n":
+                maze.display(None, color=current_color)
 
         elif choice == "4":
             print("Exiting...")
@@ -165,6 +159,7 @@ def main():
 
         else:
             print("Invalid choice, try again.")
+
 
 if __name__ == "__main__":
     try:
