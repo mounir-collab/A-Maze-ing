@@ -62,7 +62,7 @@ class Maze:
             [Cell(x, y) for x in range(width)]
             for y in range(height)
         ]
-        print(self.grid)
+        # print(self.grid)
 
 
     def get_cell(self, x, y):
@@ -117,7 +117,8 @@ class Maze:
             result.append(self.grid[cell.y][cell.x - 1])
 
         return result
-    def generate(self):
+    
+    def generate_dfs(self):
         """
         This function generates a random maze using the Recursive Backtracker algorithm
         """
@@ -155,6 +156,39 @@ class Maze:
         # print(self.grid)
         # print(stack)
 
+    def generate_prims(self):
+        """
+        Generate a maze using Randomized Prim's Algorithm
+        """
+
+        start = self.grid[0][0]
+        start.visited = True
+
+        frontier = []
+
+        # add neighbors of start to frontier
+        for n in self.neighbors(start):
+            frontier.append((start, n))
+
+        while frontier:
+
+            current, next_cell = random.choice(frontier)
+            frontier.remove((current, next_cell))
+
+            if not next_cell.visited:
+
+                current.connect(next_cell)
+                next_cell.visited = True
+
+                for n in self.neighbors(next_cell):
+                    if not n.visited:
+                        frontier.append((next_cell, n))
+    
+    def generate(self):
+        algo_gen = [self.generate_dfs , self.generate_prims]
+        gen = random.choice(algo_gen)
+        gen()
+    
     def create_42_cell_indexs(self, config):
         center_x = (config["WIDTH"] // 2) - 3
         center_y = (config["HEIGHT"] // 2) - 2

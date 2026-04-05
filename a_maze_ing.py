@@ -3,6 +3,9 @@ import random
 import os
 from maze_gene.parsing import parse_config
 from maze_gene.cell import Maze
+import pygame
+
+
 
 # ANSI color codes
 COLORS = ["\033[91m", "\033[92m", "\033[93m", "\033[94m", "\033[95m", "\033[96m"]
@@ -77,6 +80,16 @@ def main():
     
     my_seed = config.get("SEED")
 
+    # Initialize the mixer
+    pygame.mixer.init()
+
+    # Load alien sounds
+    ALIEN_SFX = {
+        "generate": pygame.mixer.Sound("alien_generate.wav"),
+        # "solve": pygame.mixer.Sound("alien_solve.wav"),
+        # "alert": pygame.mixer.Sound("alien_alert.wav")
+    }
+
     # Initial maze
     maze = Maze(width, height, my_seed)
     maze.entry = entry
@@ -123,12 +136,22 @@ def main():
             maze.exit = exit_
 
             maze.create_42_cell_indexs(config)
-            maze.generate()
 
-            path = None   # 🔥 reset path
+            algorithms = {
+                "dfs": maze.generate_dfs,
+                "prims": maze.generate_prims
+            }
+
+            algo = input("Choose generation algorithm (dfs/prims): ").lower().strip()
+
+            algorithms.get(algo, maze.generate_dfs)()
+
+            path = None
 
             print("New random maze generated!")
             show_maze_and_list(maze, current_color, config, path)
+
+           
 
         elif choice == "2":
 
@@ -139,8 +162,11 @@ def main():
             show_maze_and_list(maze, current_color, config, path)
 
         elif choice == "3":
-
+            
             path = maze.solve()
+            
+            # # Play alien solve sound
+            # ALIEN_SFX["solve"].play()
 
             show = input("Show path? (y/n/animate): ").lower().strip()
 
@@ -148,6 +174,7 @@ def main():
                 maze.display(path, color=current_color)
 
             elif show == "animate":
+                ALIEN_SFX["generate"].play()
                 maze.display(path, animate=True, delay=0.2, color=current_color)
 
             elif show == "n":
@@ -159,6 +186,7 @@ def main():
 
         else:
             print("Invalid choice, try again.")
+            
 
 
 if __name__ == "__main__":
