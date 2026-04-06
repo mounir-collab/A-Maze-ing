@@ -1,7 +1,8 @@
-import random 
+import random
 import os
 import time
 from collections import deque
+
 class Cell:
     # bit masks for each direction
     NORTH = 1 << 0  # 0001
@@ -10,7 +11,7 @@ class Cell:
     WEST  = 1 << 3  # 1000
 
     def __init__(self, x: int, y: int): # Each cell stores its position in the maze grid.
-        self.x = x                      # example : (0,0) (1,0) (2,0)
+        self.x = x                     # example : (0,0) (1,0) (2,0)
         self.y = y
         self.walls = self.NORTH | self.EAST | self.SOUTH | self.WEST # | is the bitwise OR operator.
         self.visited = False
@@ -220,7 +221,6 @@ class Maze:
             for y, x in config["pattern"]:
                 self.grid[y][x].visited = True
 
-    from collections import deque
 
     def solve(self):
 

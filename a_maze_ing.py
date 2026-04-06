@@ -1,14 +1,13 @@
 import sys
 import random
 import os
-from maze_gene.parsing import parse_config
-from maze_gene.cell import Maze
-import pygame
+from parsing import parse_config
+from maze_gene.maze_gen import Maze
 
 
 
 # ANSI color codes
-COLORS = ["\033[91m", "\033[92m", "\033[93m", "\033[94m", "\033[95m", "\033[96m"]
+COLORS = ["\x1b[46m", "\x1b[38;5;154m", "\033[93m", "\x1b[38;5;31m", "\x1b[38;5;247m", "\x1b[38;5;206m"]
 RESET_COLOR = "\033[0m"
 
 
@@ -80,15 +79,6 @@ def main():
     
     my_seed = config.get("SEED")
 
-    # Initialize the mixer
-    pygame.mixer.init()
-
-    # Load alien sounds
-    ALIEN_SFX = {
-        "generate": pygame.mixer.Sound("alien_generate.wav"),
-        # "solve": pygame.mixer.Sound("alien_solve.wav"),
-        # "alert": pygame.mixer.Sound("alien_alert.wav")
-    }
 
     # Initial maze
     maze = Maze(width, height, my_seed)
@@ -165,21 +155,17 @@ def main():
             
             path = maze.solve()
             
-            # # Play alien solve sound
-            # ALIEN_SFX["solve"].play()
-
             show = input("Show path? (y/n/animate): ").lower().strip()
 
             if show == "y":
                 maze.display(path, color=current_color)
 
             elif show == "animate":
-                ALIEN_SFX["generate"].play()
                 maze.display(path, animate=True, delay=0.2, color=current_color)
 
             elif show == "n":
                 maze.display(None, color=current_color)
-
+            maze.export_hex_maze_and_path(path)
         elif choice == "4":
             print("Exiting...")
             break
