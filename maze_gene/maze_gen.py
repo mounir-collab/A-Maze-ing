@@ -1,7 +1,6 @@
-import random
-import os
-import time
+
 from collections import deque
+import random
 
 class Cell:
     # bit masks for each direction
@@ -134,9 +133,10 @@ class Maze:
         stack.append(start)
         # print("stack :")
         # print(stack)
+    
         while stack:
 
-            current = stack[-1]
+            current = stack[-1] # [ (0  , 0)  , (0 , 1)]
 
             neighbors = self.unvisited_neighbors(current)
 
@@ -152,12 +152,14 @@ class Maze:
 
             else:
                 stack.pop()
+            # random.getstate()
         
         # print("grid :")
         # print(self.grid)
         # print(stack)
 
     def generate_prims(self):
+        
         """
         Generate a maze using Randomized Prim's Algorithm
         """
@@ -185,10 +187,10 @@ class Maze:
                     if not n.visited:
                         frontier.append((next_cell, n))
     
-    def generate(self):
-        algo_gen = [self.generate_dfs , self.generate_prims]
-        gen = random.choice(algo_gen)
-        gen()
+    # def generate(self):
+    #     algo_gen = [self.generate_dfs , self.generate_prims]
+    #     gen = random.choice(algo_gen)
+    #     gen()
     
     def create_42_cell_indexs(self, config):
         center_x = (config["WIDTH"] // 2) - 3
@@ -221,141 +223,6 @@ class Maze:
             for y, x in config["pattern"]:
                 self.grid[y][x].visited = True
 
-
-    def solve(self):
-
-        start = self.grid[self.entry[1]][self.entry[0]]
-        end = self.grid[self.exit[1]][self.exit[0]]
-
-        queue = deque([start])
-        visited = {start}
-        parent = {}
-
-        while queue:
-            current = queue.popleft()
-
-            if current == end:
-                break
-
-            for neighbor in self.reachable_neighbors(current):
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    parent[neighbor] = current
-                    queue.append(neighbor)
-
-        # reconstruct path
-        path = []
-        cur = end
-
-        while cur != start:
-            path.append(cur)
-            cur = parent.get(cur)
-
-            if cur is None:   # no path
-                return []
-
-        path.append(start)
-        path.reverse()
-
-        return path
-
-
-
-    def display(self, path=None, animate=False, delay=0.1, color="\033[97m"):
-        entry_x, entry_y = self.entry
-        exit_x, exit_y = self.exit
-
-        RESET = "\033[0m"
-
-        path_coords = []
-        if path:
-            path_coords = [(cell.x, cell.y) for cell in path]
-
-        steps = path_coords if animate and path else []
-        animated_set = set()
-
-        for step_index in range(len(steps) if animate else 1):
-            os.system("clear")
-
-            if animate:
-                animated_set.add(steps[step_index])
-
-            print(color + "██" * (self.width * 2 + 1) + RESET)
-
-            for y in range(self.height):
-                line_top = color + "██"
-                line_bottom = color + "██"
-
-                for x in range(self.width):
-                    cell = self.grid[y][x]
-                    current_path = animated_set if animate else set(path_coords)
-
-                    if (x, y) == (entry_x, entry_y):
-                        line_top += "👽"
-                    elif (x, y) == (exit_x, exit_y):
-                        line_top += "🌍"
-                    elif (x, y) in current_path:
-                        line_top += "🛸"
-                    elif cell.walls == 15:
-                        line_top += "⬜"
-                    else:
-                        line_top += "  "
-
-                    if cell.has_wall(Cell.EAST):
-                        line_top += color + "██"
-                    else:
-                        line_top += "  "
-
-                    if cell.has_wall(Cell.SOUTH):
-                        line_bottom += color + "████"
-                    else:
-                        line_bottom += "  ██"
-
-                print(line_top + RESET)
-                print(line_bottom + RESET)
-
-            if animate:
-                time.sleep(delay)
-    
-    def export_hex_maze_and_path(self, path, filename="maze.txt"):
-
-        with open(filename, "w") as f:
-
-        # ---- MAZE WALLS (hex) ----
-            for y in range(self.height):
-                line = ""
-                for x in range(self.width): 
-                    cell = self.grid[y][x]
-                    value = 0
-                    if cell.has_wall(Cell.NORTH):
-                        value |= 1
-                    if cell.has_wall(Cell.EAST):
-                        value |= 2
-                    if cell.has_wall(Cell.SOUTH):
-                        value |= 4
-                    if cell.has_wall(Cell.WEST):
-                        value |= 8
-                    line += format(value, "X")
-                f.write(line + "\n")
-
-            # ---- PATH (as letters) ----
-            directions = ""
-            for i in range(len(path)-1):
-                c = path[i]
-                n = path[i+1]
-                dx = n.x - c.x
-                dy = n.y - c.y
-
-                if dx == 1:
-                    directions += "E"
-                elif dx == -1:
-                    directions += "O"
-                elif dy == 1:
-                    directions += "S"
-                elif dy == -1:
-                    directions += "N"
-
-            f.write("\npath: " + directions + "\n")
 
 
 # ████ 

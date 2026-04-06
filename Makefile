@@ -6,6 +6,8 @@ install:
 
 debug:
 	python3 -m pdb a_maze_ing.py
+build :
+	python3 -m build maze_gen
 
 clean:
 	rm -rf __pycache__ .mypy_cache

@@ -1,11 +1,10 @@
 import sys
-import random
 import os
 from parsing import parse_config
 from maze_gene.maze_gen import Maze
-
-
-
+from visualizer.maze_displayer import display
+from solver.maze_solver import solve
+from export_hex_maze.exporter import export_hex_maze_and_path
 # ANSI color codes
 COLORS = ["\x1b[46m", "\x1b[38;5;154m", "\033[93m", "\x1b[38;5;31m", "\x1b[38;5;247m", "\x1b[38;5;206m"]
 RESET_COLOR = "\033[0m"
@@ -13,7 +12,7 @@ RESET_COLOR = "\033[0m"
 
 def show_maze_and_list(maze, color, config, path=None):
     print(color, end="")
-    maze.display(path=path, color=color)   # 👈 دعم path
+    display(maze , path=path, color=color)   # 👈 دعم path
     print(RESET_COLOR, end="")
 
 
@@ -74,8 +73,8 @@ def main():
     exit_ = config["EXIT"]
 
     # Seed
-    if "SEED" in config:
-        random.seed(config["SEED"])
+    # if "SEED" in config:
+    #     random.seed(config["SEED"])
     
     my_seed = config.get("SEED")
 
@@ -86,7 +85,8 @@ def main():
     maze.exit = exit_
 
     maze.create_42_cell_indexs(config)
-    maze.generate()
+    # maze.generate()
+    maze.generate_dfs()
 
     current_color = COLORS[0]
     path = None   # 🔥 مهم
@@ -121,10 +121,10 @@ def main():
             break
 
         if choice == "1":
+            
             maze = Maze(width, height, my_seed)
             maze.entry = entry
             maze.exit = exit_
-
             maze.create_42_cell_indexs(config)
 
             algorithms = {
@@ -153,19 +153,20 @@ def main():
 
         elif choice == "3":
             
-            path = maze.solve()
+            path = solve(maze)
+            # print(path)
             
             show = input("Show path? (y/n/animate): ").lower().strip()
 
             if show == "y":
-                maze.display(path, color=current_color)
+                display( maze , path, color=current_color)
 
             elif show == "animate":
-                maze.display(path, animate=True, delay=0.2, color=current_color)
+                display(maze , path, animate=True, delay=0.2, color=current_color)
 
             elif show == "n":
-                maze.display(None, color=current_color)
-            maze.export_hex_maze_and_path(path)
+                display( maze , None, color=current_color)
+            export_hex_maze_and_path(maze ,path , config["OUTPUT_FILE"])
         elif choice == "4":
             print("Exiting...")
             break

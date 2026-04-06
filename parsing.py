@@ -5,7 +5,8 @@ REQUIRED_KEYS = {
     "HEIGHT",
     "ENTRY",
     "EXIT",
-    "PERFECT"
+    "PERFECT",
+    "OUTPUT_FILE"
 }
 
 PATTERNS = {
@@ -88,5 +89,4 @@ def parse_config(filename):
 
     if config["ENTRY"] == config["EXIT"]:
         raise ValueError("ENTRY and EXIT cannot be the same")
-
     return config
