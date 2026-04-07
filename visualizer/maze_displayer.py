@@ -26,7 +26,11 @@ def display(maze, path=None, animate=False, delay=0.2, color="\033[97m"):
     animated_set = set()
 
     for step_index in range(len(steps) if animate else 1):
+<<<<<<< HEAD
         os.system("clear")
+=======
+
+>>>>>>> 8b8eeab43e98c2fa0c4ffb64637e22f0295ea1e9
         if animate:
             animated_set.add(steps[step_index])
 
