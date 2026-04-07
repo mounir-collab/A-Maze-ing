@@ -2,11 +2,21 @@ import os
 import time
 from maze_gene.maze_gen import Cell
 
-def display(maze, path=None, animate=False, delay= 0.2, color="\033[97m"):
-    entry_x, entry_y = maze.entry #( 0 , 0)
-    exit_x, exit_y = maze.exit #(19 , 19)
+def display(maze, path=None, animate=False, delay=0.2, color="\033[97m"):
+    entry_x, entry_y = maze.entry
+    exit_x, exit_y = maze.exit
 
     RESET = "\033[0m"
+
+    # ✅ CHECK ENTRY / EXIT
+    entry_cell = maze.grid[entry_y][entry_x]
+    exit_cell = maze.grid[exit_y][exit_x]
+
+    if entry_cell.walls == 15:
+        raise ValueError("ENTRY is placed inside a blocked cell (42 pattern)")
+
+    if exit_cell.walls == 15:
+        raise ValueError("EXIT is placed inside a blocked cell (42 pattern)")
 
     path_coords = []
     if path:
@@ -16,8 +26,7 @@ def display(maze, path=None, animate=False, delay= 0.2, color="\033[97m"):
     animated_set = set()
 
     for step_index in range(len(steps) if animate else 1):
-        # os.system("clear")
-
+        os.system("clear")
         if animate:
             animated_set.add(steps[step_index])
 

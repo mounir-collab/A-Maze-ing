@@ -97,3 +97,5 @@ def parse_config(filename):
     if output_file.lower() == "config.txt":
         raise ValueError("OUTPUT_FILE cannot be 'config.txt'")
     return config
+
+# print(parse_config("config.txt"))

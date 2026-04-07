@@ -51,9 +51,10 @@ class Cell:
 
 class Maze:
 
-    def __init__(self, width, height, seed=None):
+    def __init__(self, width, height ,seed=None , perfect: bool = True):
         self.width = width
         self.height = height
+        self.perfect = perfect
 
         if seed is not None:
             random.seed(seed)
@@ -152,18 +153,18 @@ class Maze:
 
             else:
                 stack.pop()
-            # random.getstate()
+        
+        if  not self.perfect:
+            self.make_imperfect()
         
         # print("grid :")
         # print(self.grid)
         # print(stack)
 
     def generate_prims(self):
-        
         """
         Generate a maze using Randomized Prim's Algorithm
         """
-
         start = self.grid[0][0]
         start.visited = True
 
@@ -186,11 +187,31 @@ class Maze:
                 for n in self.neighbors(next_cell):
                     if not n.visited:
                         frontier.append((next_cell, n))
+        if not self.perfect:
+            self.make_imperfect()
     
-    # def generate(self):
-    #     algo_gen = [self.generate_dfs , self.generate_prims]
-    #     gen = random.choice(algo_gen)
-    #     gen()
+
+    def make_imperfect(self, probability=0.1):
+        """
+        Remove random walls to create loops without breaking special cells.
+        """
+        for y in range(self.height):
+            for x in range(self.width):
+                cell = self.grid[y][x]
+
+                # skip “special” 42-pattern cells
+                if cell.walls == 15:  # all walls intact
+                    continue
+
+                for neighbor in self.neighbors(cell):
+                    # avoid processing the same pair twice
+                    if neighbor.x < cell.x or neighbor.y < cell.y:
+                        continue
+
+                    if random.random() < probability:
+                        # only connect if it doesn’t involve a full-wall cell
+                        if neighbor.walls != 15:
+                            cell.connect(neighbor)
     
     def create_42_cell_indexs(self, config):
         center_x = (config["WIDTH"] // 2) - 3

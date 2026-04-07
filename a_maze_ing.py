@@ -49,6 +49,7 @@ def show_intro():
     print(dim + "  - Solve maze automatically" + reset)
     print(dim + "  - Export solution to file" + reset)
     print()
+    
 
     input(purple + "  Press ENTER to start..." + reset)
     clear_screen()
@@ -71,6 +72,7 @@ def main():
     height = config["HEIGHT"]
     entry = config["ENTRY"]
     exit_ = config["EXIT"]
+    perfect_maze = config["PERFECT"]
 
     # Seed
     # if "SEED" in config:
@@ -80,7 +82,8 @@ def main():
 
 
     # Initial maze
-    maze = Maze(width, height, my_seed)
+    maze = Maze(width, height, my_seed , perfect_maze)
+    # maze = Maze(width, height, my_seed)
     maze.entry = entry
     maze.exit = exit_
 
@@ -122,7 +125,8 @@ def main():
 
         if choice == "1":
             
-            maze = Maze(width, height, my_seed)
+            maze = Maze(width, height, my_seed , perfect_maze)
+            # maze = Maze(width, height, my_seed )
             maze.entry = entry
             maze.exit = exit_
             maze.create_42_cell_indexs(config)
