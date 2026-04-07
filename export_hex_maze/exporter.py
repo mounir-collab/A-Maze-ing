@@ -1,5 +1,6 @@
 from maze_gene.maze_gen import Cell
 
+
 def export_hex_maze_and_path(maze, path, filename):
 
     with open(filename, "w") as f:

@@ -1,5 +1,6 @@
 from collections import deque
 
+
 def solve(maze):
 
     start = maze.grid[maze.entry[1]][maze.entry[0]]

@@ -10,7 +10,7 @@ build :
 	python3 -m build maze_gen
 
 clean:
-	rm -rf __pycache__ .mypy_cache
+	find . -type d \( -name "__pycache__" -o -name ".mypy_cache" \) -exec rm -rf {} +
 
 lint:
 	flake8 .

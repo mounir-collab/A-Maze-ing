@@ -2,6 +2,7 @@ import os
 import time
 from maze_gene.maze_gen import Cell
 
+
 def display(maze, path=None, animate=False, delay=0.2, color="\033[97m"):
     entry_x, entry_y = maze.entry
     exit_x, exit_y = maze.exit
