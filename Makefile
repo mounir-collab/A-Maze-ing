@@ -2,12 +2,15 @@ run:
 	python3 a_maze_ing.py config.txt
 
 install:
-	pip install -r requirements.txt
+	pip install mypy flake8
 
 debug:
 	python3 -m pdb a_maze_ing.py
 build :
-	python3 -m build maze_gen
+	poetry build
+	mv dist/maze_gene-0.1.0-py3-none-any.whl .
+	mv dist/maze_gene-0.1.0.tar.gz .
+	rm -rf dist
 
 clean:
 	find . -type d \( -name "__pycache__" -o -name ".mypy_cache" \) -exec rm -rf {} +

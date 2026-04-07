@@ -1,17 +1,44 @@
 import os
 import time
-from maze_gene.maze_gen import Cell
+from typing import Iterable, Optional, Tuple, Set, List
+from maze_gene.maze_gen import Maze, Cell
 
 
-def display(maze, path=None, animate=False, delay=0.2, color="\033[97m"):
+def display(
+    maze: Maze,
+    path: Optional[Iterable[Cell]] = None,
+    animate: bool = False,
+    delay: float = 0.2,
+    color: str = "\033[97m",
+) -> None:
+    """
+    Display the maze in the terminal.
+
+    Optionally shows a path and can animate the path traversal.
+
+    Args:
+        maze: Maze instance containing the grid and dimensions.
+        path: Optional iterable of cells representing a solution path.
+        animate: If True, animate the path step-by-step.
+        delay: Delay between animation frames in seconds.
+        color: ANSI color code used for drawing the maze walls.
+
+    Raises:
+        ValueError: If entry or exit is placed in a blocked cell.
+    """
+
+    entry_x: int
+    entry_y: int
+    exit_x: int
+    exit_y: int
     entry_x, entry_y = maze.entry
     exit_x, exit_y = maze.exit
 
-    RESET = "\033[0m"
+    RESET: str = "\033[0m"
 
-    # ✅ CHECK ENTRY / EXIT
-    entry_cell = maze.grid[entry_y][entry_x]
-    exit_cell = maze.grid[exit_y][exit_x]
+    # CHECK ENTRY / EXIT
+    entry_cell: Cell = maze.grid[entry_y][entry_x]
+    exit_cell: Cell = maze.grid[exit_y][exit_x]
 
     if entry_cell.walls == 15:
         raise ValueError("ENTRY is placed inside a blocked cell (42 pattern)")
@@ -19,12 +46,12 @@ def display(maze, path=None, animate=False, delay=0.2, color="\033[97m"):
     if exit_cell.walls == 15:
         raise ValueError("EXIT is placed inside a blocked cell (42 pattern)")
 
-    path_coords = []
+    path_coords: List[Tuple[int, int]] = []
     if path:
         path_coords = [(cell.x, cell.y) for cell in path]
 
-    steps = path_coords if animate and path else []
-    animated_set = set()
+    steps: List[Tuple[int, int]] = path_coords if animate and path else []
+    animated_set: Set[Tuple[int, int]] = set()
 
     for step_index in range(len(steps) if animate else 1):
         os.system("clear")
@@ -34,12 +61,14 @@ def display(maze, path=None, animate=False, delay=0.2, color="\033[97m"):
         print(color + "██" * (maze.width * 2 + 1) + RESET)
 
         for y in range(maze.height):
-            line_top = color + "██"
-            line_bottom = color + "██"
+            line_top: str = color + "██"
+            line_bottom: str = color + "██"
 
             for x in range(maze.width):
-                cell = maze.grid[y][x]
-                current_path = animated_set if animate else set(path_coords)
+                cell: Cell = maze.grid[y][x]
+                current_path: Set[Tuple[int, int]] = (
+                    animated_set if animate else set(path_coords)
+                )
 
                 if (x, y) == (entry_x, entry_y):
                     line_top += "👽"

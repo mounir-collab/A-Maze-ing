@@ -26,32 +26,28 @@ def parse_config(filename: str) -> Dict[str, Any]:
 
             if "=" not in line:
                 raise ValueError(
-                    f"[Line {line_num}] Missing '=' in line: {line}"
-                )
+                    f"[Line {line_num}] "
+                    f"Missing '=' in line: {line}")
 
             key, value = line.split("=", 1)
             key = key.strip()
             value = value.strip()
 
             if key not in PATTERNS:
-                raise ValueError(
-                    f"[Line {line_num}] Unknown key: {key}"
-                )
+                raise ValueError(f"[Line {line_num}] Unknown key: {key}")
 
             if value == "":
                 raise ValueError(
-                    f"[Line {line_num}] Missing value for key: {key}"
-                )
+                    f"[Line {line_num}] "
+                    f"Missing value for key: {key}")
 
             if key in config:
-                raise ValueError(
-                    f"[Line {line_num}] Duplicate key: {key}"
-                )
+                raise ValueError(f"[Line {line_num}] Duplicate key: {key}")
 
             if not re.fullmatch(PATTERNS[key], value):
                 raise ValueError(
-                    f"[Line {line_num}] Invalid value '{value}' "
-                    f"for key '{key}'"
+                    f"[Line {line_num}] "
+                    f"Invalid value '{value}' " f"for key '{key}'"
                 )
 
             config[key] = value
@@ -76,12 +72,10 @@ def parse_config(filename: str) -> Dict[str, Any]:
     ex, ey = config["ENTRY"]
     xx, xy = config["EXIT"]
 
-    if not (0 <= ex < width
-            and 0 <= ey < height):
+    if not (0 <= ex < width and 0 <= ey < height):
         raise ValueError("ENTRY out of maze bounds")
 
-    if not (0 <= xx < width
-            and 0 <= xy < height):
+    if not (0 <= xx < width and 0 <= xy < height):
         raise ValueError("EXIT out of maze bounds")
 
     if config["ENTRY"] == config["EXIT"]:
@@ -95,3 +89,6 @@ def parse_config(filename: str) -> Dict[str, Any]:
         raise ValueError("OUTPUT_FILE cannot be 'config.txt'")
 
     return config
+
+
+print(parse_config("config.txt"))

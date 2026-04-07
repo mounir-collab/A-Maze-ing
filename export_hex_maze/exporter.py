@@ -1,15 +1,16 @@
-from maze_gene.maze_gen import Cell
+from typing import List
+from maze_gene.maze_gen import Maze, Cell
 
 
-def export_hex_maze_and_path(maze, path, filename):
-
+def export_hex_maze_and_path(maze: Maze,
+                             path: List[Cell],
+                             filename: str) -> None:
     with open(filename, "w") as f:
-
         # ---- MAZE WALLS (hex) ----
         for y in range(maze.height):
             line = ""
             for x in range(maze.width):
-                cell = maze.grid[y][x]
+                cell: Cell = maze.grid[y][x]
 
                 value = 0
                 if cell.has_wall(Cell.NORTH):
@@ -28,8 +29,8 @@ def export_hex_maze_and_path(maze, path, filename):
         # ---- PATH (as letters) ----
         directions = ""
         for i in range(len(path) - 1):
-            c = path[i]
-            n = path[i + 1]
+            c: Cell = path[i]
+            n: Cell = path[i + 1]
 
             dx = n.x - c.x
             dy = n.y - c.y

@@ -1,13 +1,25 @@
 import sys
 import os
+from typing import List, Optional, Tuple, TypedDict
 from parsing import parse_config
-from maze_gene.maze_gen import Maze
+from maze_gene.maze_gen import Maze, Cell
 from visualizer.maze_displayer import display
 from solver.maze_solver import solve
 from export_hex_maze.exporter import export_hex_maze_and_path
 
+
+class Config(TypedDict):
+    WIDTH: int
+    HEIGHT: int
+    ENTRY: Tuple[int, int]
+    EXIT: Tuple[int, int]
+    PERFECT: bool
+    OUTPUT_FILE: str
+    SEED: Optional[int]
+
+
 # ANSI color codes
-COLORS = [
+COLORS: List[str] = [
     "\x1b[46m",
     "\x1b[38;5;154m",
     "\033[93m",
@@ -15,24 +27,33 @@ COLORS = [
     "\x1b[38;5;247m",
     "\x1b[38;5;206m",
 ]
-RESET_COLOR = "\033[0m"
+
+RESET_COLOR: str = "\033[0m"
 
 
-def show_maze_and_list(maze, color, config, path=None) -> None:
+def show_maze_and_list(
+    maze: Maze,
+    color: str,
+    config: Config,
+    path: Optional[List[Cell]] = None,
+) -> None:
+    """Display the maze with optional solution path."""
     print(color, end="")
     display(maze, path=path, color=color)
     print(RESET_COLOR, end="")
 
 
 def clear_screen() -> None:
+    """Clear terminal screen depending on OS."""
     os.system("cls" if os.name == "nt" else "clear")
 
 
 def show_intro() -> None:
+    """Display introduction banner and instructions."""
     clear_screen()
-    purple = "\033[95m"
-    dim = "\033[38;5;240m"
-    reset = "\033[0m"
+    purple: str = "\033[95m"
+    dim: str = "\033[38;5;240m"
+    reset: str = "\033[0m"
 
     print(purple)
     print(
@@ -81,39 +102,50 @@ def show_intro() -> None:
 
 
 def main() -> None:
+    """Main program entry point."""
     show_intro()
 
     if len(sys.argv) != 2:
         print("Usage: python3 main.py config.txt")
         sys.exit(1)
 
-    config_file = sys.argv[1]
+    config_file: str = sys.argv[1]
 
-    config = parse_config(config_file)
-    width = config["WIDTH"]
-    height = config["HEIGHT"]
-    entry = config["ENTRY"]
-    exit_ = config["EXIT"]
-    perfect_maze = config["PERFECT"]
-    my_seed = config.get("SEED")
+    # parse config and cast to Config TypedDict
+    config: Config = parse_config(config_file)  # type: ignore
 
-    maze = Maze(width, height, my_seed, perfect_maze)
-    maze.entry = entry
-    maze.exit = exit_
-    maze.create_42_cell_indexs(config)
+    width: int = config["WIDTH"]
+    height: int = config["HEIGHT"]
+    entry: Tuple[int, int] = config["ENTRY"]
+    exit_: Tuple[int, int] = config["EXIT"]
+    perfect_maze: bool = config["PERFECT"]
+
+    my_seed: Optional[int] = config.get("SEED")
+
+    # create Maze instance
+    maze: Maze = Maze(
+                      width,
+                      height,
+                      entry,
+                      exit_,
+                      seed=my_seed,
+                      perfect=perfect_maze
+                    )
+    maze.create_42_cell_indexs(dict(config))  # cast TypedDict to plain dict
     maze.generate_dfs()
 
-    current_color = COLORS[0]
-    path = None
+    current_color: str = COLORS[0]
+    path: Optional[List[Cell]] = None
 
     show_maze_and_list(maze, current_color, config, path)
 
-    i = 1
+    i: int = 1
+
     while True:
         try:
-            color = "\033[94m"
-            highlight = "\033[92m"
-            reset = "\033[0m"
+            color: str = "\033[94m"
+            highlight: str = "\033[92m"
+            reset: str = "\033[0m"
 
             print(color)
             print("╔" + "═" * 40 + "╗")
@@ -144,85 +176,66 @@ def main() -> None:
             print("╚" + "═" * 40 + "╝")
             print(reset)
 
-            choice = input("\n==> Choose an option (1-4): ").strip()
+            choice: str = input("\n==> Choose an option (1-4): ").strip()
 
         except (KeyboardInterrupt, Exception):
             print("\nProgram interrupted. Exiting...")
             break
 
         if choice == "1":
-            maze = Maze(width, height, my_seed, perfect_maze)
-            maze.entry = entry
-            maze.exit = exit_
-            maze.create_42_cell_indexs(config)
+            maze = Maze(
+                        width,
+                        height,
+                        entry,
+                        exit_,
+                        seed=my_seed,
+                        perfect=perfect_maze
+                        )
+            maze.create_42_cell_indexs(dict(config))
 
             algorithms = {
                 "dfs": maze.generate_dfs,
                 "prims": maze.generate_prims,
             }
 
-            algo = input(
-                "Choose generation algorithm (dfs/prims): "
-            ).lower().strip()
+            algo: str = (
+                input("Choose generation "
+                      "algorithm (dfs/prims): ").lower().strip()
+            )
 
             algorithms.get(algo, maze.generate_dfs)()
 
             path = None
             print("New random maze generated!")
 
-            show_maze_and_list(
-                maze,
-                current_color,
-                config,
-                path,
-            )
+            show_maze_and_list(maze, current_color, config, path)
 
         elif choice == "2":
             current_color = COLORS[i % len(COLORS)]
             i += 1
 
             print("Displaying maze in a new random color!")
-
-            show_maze_and_list(
-                maze,
-                current_color,
-                config,
-                path,
-            )
+            show_maze_and_list(maze, current_color, config, path)
 
         elif choice == "3":
             path = solve(maze)
 
-            show = input(
-                "Show path? (y/n/animate): "
-            ).lower().strip()
+            show: str = input("Show path? (y/n/animate): ").lower().strip()
 
             if show == "y":
-                display(
-                    maze,
-                    path,
-                    color=current_color,
-                )
+                display(maze, path, color=current_color)
             elif show == "animate":
                 display(
-                    maze,
-                    path,
-                    animate=True,
-                    delay=0.2,
-                    color=current_color,
-                )
+                        maze,
+                        path,
+                        animate=True,
+                        delay=0.2,
+                        color=current_color
+                        )
             else:
-                display(
-                    maze,
-                    None,
-                    color=current_color,
-                )
+                display(maze, None, color=current_color)
 
-            export_hex_maze_and_path(
-                maze,
-                path,
-                config["OUTPUT_FILE"],
-            )
+            export_hex_maze_and_path(maze, path, config["OUTPUT_FILE"])
 
         elif choice == "4":
             print("Exiting...")
