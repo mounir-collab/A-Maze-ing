@@ -89,4 +89,11 @@ def parse_config(filename):
 
     if config["ENTRY"] == config["EXIT"]:
         raise ValueError("ENTRY and EXIT cannot be the same")
+    output_file = config["OUTPUT_FILE"]
+
+    if not output_file.endswith(".txt"):
+        raise ValueError("OUTPUT_FILE must end with '.txt'")
+
+    if output_file.lower() == "config.txt":
+        raise ValueError("OUTPUT_FILE cannot be 'config.txt'")
     return config
