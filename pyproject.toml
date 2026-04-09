@@ -1,14 +1,13 @@
 [project]
-name = "maze_gene"
+name = "mazegen"
 version = "0.1.0"
-description = ""
+description = "A Python module for generating grid-based mazes."
 authors = [
-    {name = "Your Name",email = "you@example.com"}
+    {name = "manzar",email = "manzar@student.1337.ma"},
+    {name = "ancheab",email = "ancheab@student.1337.ma"}
 ]
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = [
-]
 
 
 [build-system]
@@ -17,4 +16,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.setuptools.packages.find]
 where = ["."]                   # Search from current directory
-include = ["mazegen"]           # Only include the mazegen package
+include = ["mazegen*"]           # Only include the mazegen package
+exclude = ["export_hex_maze*" , "solver*" , "visualizer*"]

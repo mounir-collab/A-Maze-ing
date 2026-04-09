@@ -2,7 +2,7 @@ import sys
 import os
 from typing import List, Optional, Tuple, TypedDict
 from parsing import parse_config
-from maze_gene.maze_gen import Maze, Cell
+from mazegen.maze_gen import Maze, Cell
 from visualizer.maze_displayer import display
 from solver.maze_solver import solve
 from export_hex_maze.exporter import export_hex_maze_and_path
@@ -138,7 +138,11 @@ def main() -> None:
     path: Optional[List[Cell]] = None
 
     show_maze_and_list(maze, current_color, config, path)
-
+    export_hex_maze_and_path(maze,
+                             path,
+                             entry,
+                             exit_,
+                             config["OUTPUT_FILE"])
     i: int = 1
 
     while True:
@@ -192,7 +196,7 @@ def main() -> None:
                         perfect=perfect_maze
                         )
             maze.create_42_cell_indexs(dict(config))
-
+            path = None
             algorithms = {
                 "dfs": maze.generate_dfs,
                 "prims": maze.generate_prims,
@@ -205,11 +209,14 @@ def main() -> None:
 
             algorithms.get(algo, maze.generate_dfs)()
 
-            path = None
             print("New random maze generated!")
 
             show_maze_and_list(maze, current_color, config, path)
-
+            export_hex_maze_and_path(maze,
+                                     path,
+                                     config["ENTRY"],
+                                     config["EXIT"],
+                                     config["OUTPUT_FILE"])
         elif choice == "2":
             current_color = COLORS[i % len(COLORS)]
             i += 1
@@ -235,7 +242,11 @@ def main() -> None:
             else:
                 display(maze, None, color=current_color)
 
-            export_hex_maze_and_path(maze, path, config["OUTPUT_FILE"])
+            export_hex_maze_and_path(maze,
+                                     path,
+                                     config["ENTRY"],
+                                     config["EXIT"],
+                                     config["OUTPUT_FILE"])
 
         elif choice == "4":
             print("Exiting...")

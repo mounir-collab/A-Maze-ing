@@ -6,8 +6,8 @@ REQUIRED_KEYS = {"WIDTH", "HEIGHT", "ENTRY", "EXIT", "PERFECT", "OUTPUT_FILE"}
 PATTERNS = {
     "WIDTH": r"^\d+$",
     "HEIGHT": r"^\d+$",
-    "ENTRY": r"^\d+,\d+$",
-    "EXIT": r"^\d+,\d+$",
+    "ENTRY": r"^\d+\s*,\s*\d+$",
+    "EXIT": r"^\d+\s*,\s*\d+$",
     "OUTPUT_FILE": r"^[\w\-.]+$",
     "PERFECT": r"^(True|False)$",
     "SEED": r"^\d+$",
@@ -30,7 +30,7 @@ def parse_config(filename: str) -> Dict[str, Any]:
                     f"Missing '=' in line: {line}")
 
             key, value = line.split("=", 1)
-            key = key.strip()
+            key = key.strip().upper()
             value = value.strip()
 
             if key not in PATTERNS:
@@ -89,6 +89,3 @@ def parse_config(filename: str) -> Dict[str, Any]:
         raise ValueError("OUTPUT_FILE cannot be 'config.txt'")
 
     return config
-
-
-print(parse_config("config.txt"))

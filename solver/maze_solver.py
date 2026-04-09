@@ -1,6 +1,6 @@
 from typing import List, Dict, Set
 from collections import deque
-from maze_gene.maze_gen import Maze, Cell
+from mazegen.maze_gen import Maze, Cell
 
 
 def solve(maze: Maze) -> List[Cell]:

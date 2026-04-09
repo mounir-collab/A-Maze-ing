@@ -5,11 +5,11 @@ install:
 	pip install mypy flake8
 
 debug:
-	python3 -m pdb a_maze_ing.py
+	python3 -m pdb a_maze_ing.py config.txt
 build :
 	poetry build
-	mv dist/maze_gene-0.1.0-py3-none-any.whl .
-	mv dist/maze_gene-0.1.0.tar.gz .
+	mv dist/mazegen-0.1.0-py3-none-any.whl .
+	mv dist/mazegen-0.1.0.tar.gz .
 	rm -rf dist
 
 clean:

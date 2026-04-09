@@ -1,7 +1,7 @@
 import os
 import time
 from typing import Iterable, Optional, Tuple, Set, List
-from maze_gene.maze_gen import Maze, Cell
+from mazegen.maze_gen import Maze, Cell
 
 
 def display(

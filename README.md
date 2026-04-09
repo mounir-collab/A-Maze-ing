@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by mounir-collab.*
+*This project has been created as part of the 42 curriculum by <manzar>, <ancheab>.*
 
 ## Description
 
@@ -135,10 +135,14 @@ The project is structured with reusable, modular components:
 ## Team & Project Management
 
 ### Team Composition
-- **mounir-collab**: Developer and Project Lead
+- **manzar**: Developer and Project Lead
   - Responsible for overall architecture
   - Maze generation and solver implementation
   - Testing and integration
+- **ancheab** Developer and Project Partner
+  - Maze parsing and hadling errors
+  - Testing and integration
+  - Maze displaying and make decorations
 
 ### Planning & Evolution
 **Initial Plan:**
@@ -232,7 +236,3 @@ Solutions and mazes can be exported to text files in hexadecimal representation 
 - Final testing and debugging
 - Project architecture decisions
 - UI/UX design choices
-
----
-
-**License:** GPL-3.0 (GNU General Public License v3.0)
